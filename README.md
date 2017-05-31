@@ -98,7 +98,7 @@ WEB-INF/views、WEB-INF/admin、WebRoot/admin。
 
 ## 演示地址
 
-演示地址：http://47.92.7.213:8080/HRSystem/index.jsp
+演示地址：http://47.92.7.213:8080/NewsSystem/index.jsp
 
 ### 预览图
 
