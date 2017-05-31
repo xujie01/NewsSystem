@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="magicgis.newssystem.models.NewsType" table="NEWSTYPES_TABLE">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="native" />
+		</id>
+		<property name="typeName" type="java.lang.String">
+			<column name="TYPE_NAME" />
+		</property>
+		<property name="introduction" type="java.lang.String">
+			<column name="INTRODUCTION" />
+		</property>
+		<many-to-one name="admin" class="magicgis.newssystem.models.security.Admin"
+			fetch="join">
+			<column name="ADMIN" />
+		</many-to-one>
+		<property name="createTime" type="java.util.Date">
+			<column name="CREATE_TIME" />
+		</property>
+	</class>
+</hibernate-mapping>

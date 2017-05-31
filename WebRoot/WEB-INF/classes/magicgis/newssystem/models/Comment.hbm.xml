@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="magicgis.newssystem.models.Comment" table="COMMENTS_TABLE">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="native" />
+		</id>
+		<property name="content" type="java.lang.String">
+			<column name="CONTENT" />
+		</property>
+		<property name="createTime" type="java.util.Date">
+			<column name="CREATE_TIME" />
+		</property>
+		<property name="ipAddress" type="java.lang.String">
+			<column name="IP_ADDRESS" />
+		</property>
+		<many-to-one name="user" class="magicgis.newssystem.models.User"
+			fetch="join" lazy="false">
+			<column name="USER" />
+		</many-to-one>
+		<many-to-one name="news" class="magicgis.newssystem.models.News"
+			fetch="join" lazy="false">
+			<column name="NEWS" />
+		</many-to-one>
+	</class>
+</hibernate-mapping>

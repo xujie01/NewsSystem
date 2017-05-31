@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="magicgis.newssystem.models.security.Role" table="ROLES_TABLE">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="roleName" type="java.lang.String">
+            <column name="ROLE_NAME" />
+        </property>
+        <property name="roleValue" type="java.lang.String">
+            <column name="ROLE_VALUE" />
+        </property>
+        <property name="roleDesc" type="java.lang.String">
+            <column name="ROLE_DESC" />
+        </property>
+        <set name="rights" table="ROLES_RIGHTS_LINK" lazy="false">
+            <key>
+                <column name="ROLE_ID" />
+            </key>
+            <many-to-many class="magicgis.newssystem.models.security.Right" column="RIGHT_ID"/>
+        </set>
+    </class>
+</hibernate-mapping>

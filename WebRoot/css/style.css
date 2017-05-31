@@ -1,0 +1,16 @@
+body {
+	font-family: "microsoft yahei";
+	width: 75%;
+	height: auto;
+	margin: 0 auto !important;
+}
+
+a:link, a:visited {
+	text-decoration: none;
+	color: #006;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #cc0000;
+}

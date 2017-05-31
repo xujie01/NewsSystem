@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.ui.theme" value="simple"></constant>
+
+	<package name="NewsSystem" extends="struts-default" namespace="/">
+
+		<!--Struts拦截器（）权限检查等-->
+		<interceptors>
+			<interceptor name="loginInterceptor"
+				class="magicgis.newssystem.interceptor.LoginInterceptor"></interceptor>
+			<interceptor name="rightFilterInterceptor"
+				class="magicgis.newssystem.interceptor.RightFilterInterceptor"></interceptor>
+			<interceptor name="catchUrlInterceptor"
+				class="magicgis.newssystem.interceptor.CatchUrlInterceptor"></interceptor>
+			<interceptor-stack name="NewsSystemStack">
+				<interceptor-ref name="catchUrlInterceptor"></interceptor-ref>
+				<interceptor-ref name="rightFilterInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack">
+					<param name="modelDriven.refreshModelBeforeResult">true</param>
+					<param name="fileUpload.maximumSize">2097152</param>
+					<param name="fileUpload.allowedExtensions">.bmp,.png,.gif,.jpeg,.jpg,.pjpeg</param>
+					<param name="fileUpload.allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,
+						image/pjpeg,image/x-png</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="NewsSystemStack"></default-interceptor-ref>
+
+		<!--全局action-->
+		<global-results>
+			<result name="to_NewsAction_getAllPassedNews" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsAction_getAllPassedNews</param>
+			</result>
+			<result name="to_PasswordAction_transfer" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">PasswordAction_transfer</param>
+			</result>
+			<result name="input">
+				<param name="location">/WEB-INF/views/404.jsp</param>
+			</result>
+			<result name="validationCode_success" type="stream">
+				<param name="contentType">image/jpeg</param>
+				<param name="inputName">byteArrayInputStream</param>
+			</result>
+			<result name="to_NewsAction_getAllNotPassedNews" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsAction_getAllNotPassedNews</param>
+			</result>
+			<result name="error_no_right">
+				<param name="namespace">/</param>
+				<param name="location">/WEB-INF/admin/error.jsp</param>
+			</result>
+			<result name="to_NewsAction_getNews" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsAction_getNews</param>
+			</result>
+			<result name="to_NewsAction_getAllNews" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsAction_getAllNews</param>
+			</result>
+			<result name="to_NewsAction_getAllPassedNews" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsAction_getAllPassedNews</param>
+			</result>
+			<result name="to_NewsTypeAction_getAllNewsTypes" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">NewsTypeAction_getAllNewsTypes</param>
+			</result>
+			<result type="stream" name="ajax_success">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="to_RightAction_findAllRights" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">RightAction_findAllRights</param>
+			</result>
+			<result name="to_RoleAction_findAllRoles" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">RoleAction_findAllRoles</param>
+			</result>
+			<result name="to_AdminAction_getAllAdmins" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">AdminAction_getAllAdmins</param>
+			</result>
+
+			<result name="to_AdminAction_home" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">AdminAction_home</param>
+			</result>
+		</global-results>
+
+		<!--普通用户登陆操作-->
+		<action name="LoginAction_*" class="loginAction" method="{1}">
+			<result name="input">/WEB-INF/views/login.jsp</result>
+			<result name="to_loginPage">/WEB-INF/views/login.jsp</result>
+		</action>
+
+		<action name="RegAction_*" class="regAction" method="{1}">
+			<result name="input">/WEB-INF/views/reg.jsp</result>
+			<result name="to_regPage">/WEB-INF/views/reg.jsp</result>
+		</action>
+
+		<!--获取新闻操作-->
+		<action name="NewsAction_*" class="newsAction" method="{1}">
+			<result name="to_homePage">/WEB-INF/views/home.jsp</result>
+			<result name="to_viewNewsPage">/WEB-INF/views/viewNews.jsp</result>
+			<result name="to_newsListPage">/WEB-INF/admin/news/newsList.jsp</result>
+			<result name="to_updateNewsPage">/WEB-INF/admin/news/updateNews.jsp</result>
+			<result name="to_addNewsPage">/WEB-INF/admin/news/addNews.jsp</result>
+			<result name="to_newsPage">/WEB-INF/admin/news/news.jsp</result>
+			<result name="to_examineNewsListPage">/WEB-INF/admin/news/examineNewsList.jsp</result>
+			<result name="to_examineNewsPage">/WEB-INF/admin/news/examineNews.jsp</result>
+			<result name="to_searchResultPage">/WEB-INF/views/searchNews.jsp</result>
+			<result name="to_searchPage">/WEB-INF/admin/news/searchNews.jsp</result>
+			<result name="upload_error">/WEB-INF/admin/news/addNews.jsp</result>
+		</action>
+
+		<action name="AdminAction_*" class="adminAction" method="{1}">
+			<result name="to_homePage">/WEB-INF/admin/main/home.jsp</result>
+			<result name="input">/admin/index.jsp</result>
+			<result name="to_indexPage" type="redirect">/admin/index.jsp</result>
+			<result name="to_adminListPage">/WEB-INF/admin/user/adminList.jsp</result>
+			<result name="to_updateAdminPage">/WEB-INF/admin/user/updateAdmin.jsp</result>
+			<result name="to_addAdminPage">/WEB-INF/admin/user/addAdmin.jsp</result>
+			<result name="to_configPage">/WEB-INF/admin/main/config.jsp</result>
+		</action>
+
+		<action name="NewsTypeAction_*" class="newsTypeAction" method="{1}">
+			<result name="to_newsTypesListPage">/WEB-INF/admin/newsType/newsTypesList.jsp
+			</result>
+			<result name="to_updateNewsTypePage">/WEB-INF/admin/newsType/updateNewsType.jsp
+			</result>
+			<result name="to_addNewsTypePage">/WEB-INF/admin/newsType/addNewsType.jsp</result>
+			<result name="to_newscolumns">/WEB-INF/views/lanmu.jsp</result>
+		</action>
+
+		<action name="UserAction_*" class="userAction" method="{1}">
+			<result name="to_userListPage">/WEB-INF/admin/user/userList.jsp</result>
+		</action>
+
+		<action name="RightAction_*" class="rightAction" method="{1}">
+			<result name="to_rightListPage">/WEB-INF/admin/right/rightList.jsp</result>
+			<result name="to_editRightPage">/WEB-INF/admin/right/updateRight.jsp</result>
+			<result name="to_addRightPage">/WEB-INF/admin/right/addRight.jsp</result>
+		</action>
+
+		<action name="RoleAction_*" class="roleAction" method="{1}">
+			<result name="to_roleListPage">/WEB-INF/admin/role/roleList.jsp</result>
+			<result name="to_addRolePage">/WEB-INF/admin/role/addRole.jsp</result>
+			<result name="to_updateRolePage">/WEB-INF/admin/role/updateRole.jsp</result>
+		</action>
+
+		<action name="PasswordAction_*" class="passwordAction" method="{1}">
+			<result name="to_changePasswordPage">/WEB-INF/admin/user/changePassword.jsp</result>
+			<result name="to_successChangePage">/WEB-INF/admin/user/successChange.jsp</result>
+			<result name="input">/WEB-INF/admin/user/changePassword.jsp</result>
+		</action>
+
+		<action name="WeatherAction_*" class="weatherAction" method="{1}">
+		</action>
+
+	</package>
+</struts>

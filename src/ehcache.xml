@@ -1,0 +1,25 @@
+<ehcache>
+   
+    <diskStore path="./target/tmp"/>
+
+    <defaultCache
+        maxElementsInMemory="10000"
+        eternal="false"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120"
+        overflowToDisk="true"
+        />
+  
+    <cache name="newsPublishCache"
+        maxElementsInMemory="10000"
+        eternal="false"
+        timeToIdleSeconds="1"
+        timeToLiveSeconds="1"
+        overflowToDisk="true"
+        maxElementsOnDisk="10000000"
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU"
+        />
+
+</ehcache>

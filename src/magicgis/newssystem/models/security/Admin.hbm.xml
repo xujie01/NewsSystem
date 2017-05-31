@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="magicgis.newssystem.models.security.Admin" table="ADMINS_TABLE">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="native" />
+		</id>
+		<property name="username" type="java.lang.String">
+			<column name="USERNAME" />
+		</property>
+		<property name="password" type="java.lang.String">
+			<column name="PASSWORD" />
+		</property>
+		<property name="email" type="java.lang.String">
+			<column name="EMAIL" />
+		</property>
+		<property name="enabled" type="boolean">
+			<column name="ENABLED" />
+		</property>
+		<property name="loginFailureCount" type="java.lang.Integer">
+			<column name="LOGIN_FAILURE_COUNT" />
+		</property>
+		<property name="lockedTime" type="java.util.Date">
+			<column name="LOCKED_TIME" />
+		</property>
+		<property name="loginTime" type="java.util.Date">
+			<column name="LOGIN_TIME" />
+		</property>
+		<property name="ipAddress" type="java.lang.String">
+			<column name="IP_ADDRESS" />
+		</property>
+		<property name="createTime" type="java.util.Date">
+			<column name="CREATE_TIME" />
+		</property>
+		<!-- 映射User到Role之间多对多单向关联关系 -->
+		<set name="roles" table="ADMINS_ROLES_LINK" lazy="false">
+			<key>
+				<column name="ADMIN" />
+			</key>
+			<many-to-many class="magicgis.newssystem.models.security.Role"
+				column="ROLE" />
+		</set>
+	</class>
+</hibernate-mapping>

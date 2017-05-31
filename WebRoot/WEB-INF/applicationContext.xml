@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="magicgis.newssystem.actions.impl,magicgis.newssystem.daos.impl,
+		magicgis.newssystem.services.impl,magicgis.newssystem.listener"></context:component-scan>
+
+	<context:property-placeholder location="classpath:config.properties" />
+	
+	<!--配置异步线程执行器 -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<!-- 线程池维护线程的最少数量 -->
+		<property name="corePoolSize" value="${task.core_pool_size}" />
+		<!-- 线程池维护线程的最大数量 -->
+		<property name="maxPoolSize" value="${task.max_pool_size}" />
+		<!-- 线程池所使用的缓冲队列 -->
+		<property name="queueCapacity" value="${task.queue_capacity}" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="${task.keep_alive_seconds}" />
+	</bean>
+
+	<bean id="dataSource_main" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_main"></property>
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>classpath:magicgis/newssystem/models</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 定义事务管理器（声明式的事务） -->  
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="load*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 自定义缓存key生成器 -->
+	<bean id="newsPublishKeyGenerator" class="magicgis.newssystem.cache.NewsPublishKeyGenerator" />
+
+	<!-- 缓存管理器工厂bean -->
+	<bean id="cacheManagerFactoryBean"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+
+	<!-- 缓存管理器 -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="cacheManagerFactoryBean" />
+	</bean>
+
+	<!-- 缓存通知 -->
+	<cache:advice id="cacheAdvice" cache-manager="cacheManager"
+		key-generator="newsPublishKeyGenerator">
+
+		<cache:caching cache="newsPublishCache">
+			<cache:cacheable method="get*" />
+			<cache:cacheable method="load*" />
+			<cache:cacheable method="find*" />
+
+			<cache:cache-evict method="save*" all-entries="true" />
+			<cache:cache-evict method="update*" all-entries="true" />
+			<cache:cache-evict method="delete*" all-entries="true" />
+		</cache:caching>
+	</cache:advice>
+
+	<aop:config>
+		<!-- 配置事务拦截器拦截哪些类的哪些方法,一般设置成拦截Service -->
+		<aop:pointcut expression="execution(* magicgis.newssystem.services.impl.*.*(..))" id="txPointCut" />
+		<!-- 缓存切入点通知 -->
+		<aop:advisor advice-ref="cacheAdvice" pointcut="execution(* *..*Service.*(..))" order="0" />
+		<!-- 配置切面及通知 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut" order="2" />
+	</aop:config>
+
+</beans>

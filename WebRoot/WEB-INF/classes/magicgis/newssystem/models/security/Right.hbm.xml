@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="magicgis.newssystem.models.security.Right" table="RIGHTS_TABLE">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="rightName" type="java.lang.String">
+            <column name="RIGHT_NAME" />
+        </property>
+        <property name="rightUrl" type="java.lang.String">
+            <column name="RIGHT_URL" />
+        </property>
+        <property name="rightDesc" type="java.lang.String">
+            <column name="RIGHT_DESC" />
+        </property>
+        <property name="rightCode" type="long" update="false">
+            <column name="RIGHT_CODE" />
+        </property>
+        <property name="rightPos" type="int" update="false">
+            <column name="RIGHT_POS" />
+        </property>
+        <property name="common" type="boolean">
+            <column name="COMMON" />
+        </property>
+    </class>
+</hibernate-mapping>
